@@ -1,0 +1,93 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+}
+
+android {
+    def androidConfig = rootProject.ext
+
+    namespace 'com.juliopicazo.democity'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.juliopicazo.democity"
+        minSdk androidConfig.minSdk
+        targetSdk androidConfig.targetSdk
+
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "IMAGES_BASE_URL", "\"http://image.tmdb.org/t/p/w500\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility androidConfig.sourceCompatibility
+        targetCompatibility androidConfig.targetCompatibility
+    }
+    kotlinOptions {
+        jvmTarget = androidConfig.jvmTarget
+    }
+    buildFeatures {
+        dataBinding true
+    }
+}
+
+dependencies {
+    implementation project(path: ':domain')
+    implementation project(path: ':di')
+
+    def appDependencies = rootProject.ext.dependencies
+    def unitTestDependencies = rootProject.ext.unitTestDependencies
+    def androidTestDependencies = rootProject.ext.androidTestDependencies
+
+    // Android general libs
+    implementation appDependencies.coreKtx
+    implementation appDependencies.appCompat
+    implementation appDependencies.material
+    implementation appDependencies.constraintLayout
+    implementation appDependencies.gson
+
+    // Hilt
+    implementation appDependencies.hiltAndroid
+    kapt appDependencies.hiltAndroidCompiler
+
+    // LifeCycle
+    implementation appDependencies.lifecycleLiveDataKtx
+    implementation appDependencies.lifecycleViewModelKtx
+    implementation appDependencies.lifecycleViewModelRuntimeKtx
+
+    // Picasso
+    implementation appDependencies.picasso
+
+    // Unit test
+    testImplementation unitTestDependencies.junit
+    testImplementation unitTestDependencies.mockkAndroid
+    testImplementation unitTestDependencies.mockkAgent
+    testImplementation unitTestDependencies.archCoreTesting
+    testImplementation unitTestDependencies.coroutinesCore
+    testImplementation unitTestDependencies.coroutinesTest
+
+    // Android test
+    androidTestImplementation androidTestDependencies.junit
+    androidTestImplementation androidTestDependencies.espressoCore
+    def activity_version = "1.6.1"
+
+    // Java language implementation
+    implementation "androidx.activity:activity:$activity_version"
+    // Kotlin
+    implementation "androidx.activity:activity-ktx:$activity_version"
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+
+}
